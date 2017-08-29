@@ -1,2 +1,4 @@
-# YenePayWoocommerce
-Payment method plugin for Woocommerce
+# Woocommerce payment method plugin for YenePay
+
+
+
