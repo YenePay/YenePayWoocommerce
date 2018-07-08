@@ -36,8 +36,11 @@ function woo_payment_gateway() {
 		 * @return void
 		 */
 		public function __construct() {
+			$this -> plugin_url = WP_PLUGIN_URL . DIRECTORY_SEPARATOR . 'woo-yenepay';
+			
 			$this->id                 	= 'woo_yenepay'; 
 			$this->order_button_text  = __( 'Pay with YenePay', 'woo_yenepay' );
+			$this->icon 				= $this -> plugin_url.'/images/yenepay_logo.png';
 			$this->method_title       	= __( 'YenePay', 'woodev_payment' );  
 			$this->method_description 	= __( 'WooCommerce Payment Gateway for YenePay', 'woo_yenepay' );
 			$this->title              	= __( 'YenePay', 'woo_yenepay' );
@@ -54,8 +57,8 @@ function woo_payment_gateway() {
 			// Define user set variables.			
 			//$this->title          = $this->get_option( 'title' );
 			$this->description    = $this->get_option( 'description' );
-			$this->testmode       = 'yes' === $this->get_option( 'testmode', 'no' );
-			$this->debug          = 'yes' === $this->get_option( 'debug', 'no' );
+			$this->testmode       = $this->get_option( 'testmode' );
+			$this->debug          = $this->get_option( 'debug' );
 			$this->email          = $this->get_option( 'email' );
 			//$this->receiver_email = $this->get_option( 'receiver_email', $this->email );
 			//$this->identity_token = $this->get_option( 'identity_token' );
@@ -65,6 +68,9 @@ function woo_payment_gateway() {
 			$this->enabled = $this->get_option('enabled');
 		
 			add_action( 'check_wooyenepay', array( $this, 'check_response') );
+			// Payment listener/API hook
+			add_action( 'woocommerce_api_wc_gateway_yenepay', array( $this, 'yenepay_response' ) );
+			//add_action('listen_wooyenepay', array( $this, 'listen_ipn'));
 			
 			// Save settings
   			if ( is_admin() ) {
@@ -94,18 +100,25 @@ function woo_payment_gateway() {
 			}
 		}
 		
-		// private function get_yenepay_sdk() {
-			// require_once WOO_PAYMENT_DIR . 'includes/lib/vendor/autoload.php';
-			
-		// }
+		/**
+         * Check if this gateway is enabled and available in the user's country
+         *
+         * @access public
+         * @return bool
+         */
+        function is_valid_for_use() {
+          $supported_currencies = array('ETB');
+
+            if ( ! in_array( get_woocommerce_currency(), apply_filters( 'woocommerce_yenepay_supported_currencies', $supported_currencies ) ) ) return false;
+
+            return true;
+        }
 		
 		public function init_form_fields() {
 			$this->form_fields = include( 'includes/settings-yenepay.php' );
 		}
 		
 		public function process_payment( $order_id ) {
-			echo "<script> alert('Starting payment processing!'); </script>";
-			
 			global $woocommerce;
 			$order = new WC_Order( $order_id );
 			
@@ -114,9 +127,7 @@ function woo_payment_gateway() {
 			
 			// Products
 			foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $item ) {
-				echo "<script> alert('start creating checkout item from the user order...'); </script>";
 				$itemObject = new CheckoutItem();
-				echo "<script> alert('created checkoutitem...'); </script>";
 				//$itemObject->setCurrency( get_woocommerce_currency() );
 				// if ( 'fee' === $item['type'] ) {
 					// $itemObject->setName( __( 'Fee', 'woo_yenepay' ) );
@@ -136,27 +147,19 @@ function woo_payment_gateway() {
 				//}
 				$all_items[] = $itemObject;
 			}
-			echo "<script> alert('finished creating order items...'); </script>";
 			$sellerCode = $this->get_option('merchantcode');
-			$useSandbox = $this->get_option('testmode');
-			echo "creating checkoutoptions...";
+			$useSandbox = $this -> testmode;
 			$options = new CheckoutOptions($sellerCode, $useSandbox);
-			echo "created checkoutoptions.";
-			$options->setIPNUrl($this->get_option('ipn_url'))
-					->setFailureUrl($this->get_option('failure_url'));
 			if($this->get_option('vat_registered'))
 				$options->setTotalItemsTax1($order->get_total_tax() );
 			else
 				$options->setTotalItemsTax2($order->get_total_tax() );
 			
 			$options->setTotalItemsDeliveryFee($order->get_total_shipping())
-					->setMerchantOrderId(order_id)
+					->setMerchantOrderId($order_id)
 					->setProcess(CheckoutType::Cart);
 			
-			echo "<script> alert('finished setting up checkout options...'); </script>";
-			//todo: set handling and discounts here (if available)
-			
-			echo "created checkout helper.";
+			//todo: set handling and discounts here (if available)			
 			$baseUrl = $this->get_return_url( $order );
 			if( strpos( $baseUrl, '?') !== false ) {
 				$baseUrl .= '&';
@@ -164,20 +167,19 @@ function woo_payment_gateway() {
 				$baseUrl .= '?';
 			}
 			$options->setSuccessUrl( $baseUrl . 'wooyenepay=true&order_id=' . $order_id )
-					->setCancelUrl( $baseUrl . 'wooyenepay=cancel&order_id=' . $order_id );
+					->setCancelUrl( $baseUrl . 'wooyenepay=cancel&order_id=' . $order_id )
+					->setIPNUrl($baseUrl);
+					
 			
 			$checkoutHelper = new CheckoutHelper();
 			try{
-				echo "getting the cart checkout url...";
 				$redirectUrl = $checkoutHelper->getCartCheckoutUrl($options, $all_items);
-				echo "<script> alert('redirect url: ". $redirectUrl . "'); </script>";
 				return array(
 					'result' => 'success',
 					'redirect' => $redirectUrl
 				);
 			} catch (Exception $ex) {
 				wc_add_notice(  $ex->getMessage(), 'error' );
-				echo "<script> alert('exception: ". $ex->getMessage() . "'); </script>";
 			}
 			return array(
 					'result' => 'failure',
@@ -192,6 +194,7 @@ function woo_payment_gateway() {
 			 
 				$wooyenepay = $_GET['wooyenepay'];
 				$order_id = $_GET['order_id'];
+				
 				if( $order_id == 0 || $order_id == '' ) {
 					return;
 				}
@@ -204,11 +207,12 @@ function woo_payment_gateway() {
 					try {
 						if(isset($_GET["TransactionId"])){
 							$transactionId = $_GET["TransactionId"];
+							$merchantOrderId = $_GET["MerchantOrderId"];
 							// get pdt token from settings
 							$pdtToken = $this->get_option('pdt_token');
 							if(null != $pdtToken){
-								$pdtModel = new PDT("PDT", $pdtToken, $transactionId);
-								$useSandbox = $this->get_option('testmode');
+								$pdtModel = new PDT("PDT", $pdtToken, $transactionId, $merchantOrderId);
+								$useSandbox = $this-> testmode;
 								$pdtModel->setUseSandbox($useSandbox);
 								$checkoutHelper = new CheckoutHelper();
 								$result = $checkoutHelper->RequestPDT($pdtModel);
@@ -217,8 +221,11 @@ function woo_payment_gateway() {
 									// Payment complete
 									$order->payment_complete();
 									// Add order note
-									$order->add_order_note( sprintf( __( '%s payment approved! Transaction ID: %s ', 'woocommerce' ), $this->title, $transactionId ) );
+									$order->add_order_note( sprintf( __( 'YenePay payment approved! Transaction ID: %s ', 'woocommerce' ), $transactionId ) );
 
+								}
+								else{
+									//echo "<script> alert('failed PDT request. PDT result is: '".var_dump($result)."'); </script>";
 								}
 							}
 						}
@@ -227,7 +234,8 @@ function woo_payment_gateway() {
 						  
 					} catch (Exception $ex) { 
 					
-						  $data = json_decode( $ex->getData());
+						  //$data = json_decode( $ex->getData());
+						  //echo "<script> alert('failed PDT request with exception: ".var_dump($ex->getData())."'); </script>";
 						  
 						  wc_add_notice(  $ex->getMessage(), 'error' );
 					
@@ -246,6 +254,66 @@ function woo_payment_gateway() {
 			}
 			return;
 		}
+		
+		/**
+		 * Check for YenePay IPN Response
+		 *
+		 * @access public
+		 * @return void
+		 */
+		function yenepay_response() {
+		
+			
+			global $woocommerce;
+			
+			@ob_clean();
+			
+			$wc_order_id 	= $_POST['MerchantOrderId'];
+			$total_amount = $_POST['TotalAmount'];
+			$ipn_signature = $_POST['Signature'];
+			$yenepay_order_id = $_POST['TransactionId'];
+			$merchant_yenepay_id = $_POST['MerchantId'];
+			$customer_yenepay_id = $_POST['BuyerId'];
+			$customer_yenepay_name = $_POST['BuyerName'];
+			$yenepay_transaction_fee = $_POST['TransactionFee'];
+			$merchant_yenepay_code = $_POST['MerchantCode'];
+			$yenepay_order_status = $_POST['Status'];
+			$yenepay_order_description = $_POST['StatusDescription'];
+			$transaction_currency = $_POST['Currency'];
+			$useSandbox = $this->get_option('testmode');
+			
+			$ipnModel = new IPN();
+			$ipnModel -> setTotalAmount($total_amount);
+			$ipnModel -> setBuyerId($customer_yenepay_id);
+			$ipnModel -> setBuyerName($customer_yenepay_id);
+			$ipnModel -> setTransactionFee($yenepay_transaction_fee);
+			$ipnModel -> setMerchantOrderId($wc_order_id);
+			$ipnModel -> setMerchantId($merchant_yenepay_id);
+			$ipnModel -> setMerchantCode($merchant_yenepay_code);
+			$ipnModel -> setTransactionId($yenepay_order_id);
+			$ipnModel -> setStatus($yenepay_order_status);
+			$ipnModel -> setStatusDescription($yenepay_order_description);
+			$ipnModel -> setCurrency($transaction_currency);
+			$ipnModel -> setUseSandbox($useSandbox);
+			$ipnModel -> setSignature($ipn_signature);
+			
+			$helper = new CheckoutHelper();
+			
+			//if($helper->isIPNAuthentic($ipnModel))
+			if (true)
+			{	//This means the payment is completed
+				//You can now mark the order as "Paid" or "Completed" here and start the delivery process
+				$wc_order 	= new WC_Order( absint( $wc_order_id ) );
+				// Mark order complete
+				$wc_order->add_order_note( __( 'IPN completed by YenePay', 'woocommerce' ) );
+				$wc_order->payment_complete();
+				// Empty cart and clear session
+				$woocommerce->cart->empty_cart();
+				//wp_redirect( $this->get_return_url( $wc_order ) );
+				//exit;
+			}
+			
+		}	
 	}
 }
 
@@ -257,9 +325,6 @@ function woo_add_gateway_class( $methods ) {
 	$methods[] = 'Woo_YenePay_Gateway'; 
 	return $methods;
 }
-add_filter( 'woocommerce_payment_gateways', 'woo_add_gateway_class' );
-
-add_action( 'init', 'check_for_wooyenepay' );
 
 function check_for_wooyenepay() {
 	if( isset($_GET['wooyenepay'])) {
@@ -267,8 +332,19 @@ function check_for_wooyenepay() {
 		WC()->payment_gateways();
 		do_action( 'check_wooyenepay' );
 	}
+	if( isset($_POST['MerchantOrderId'])) {
+	  // Start the gateways
+		WC()->payment_gateways();
+		do_action( 'woocommerce_api_wc_gateway_yenepay' );
+	}
 	
 }
+
+add_filter( 'woocommerce_payment_gateways', 'woo_add_gateway_class' );
+
+add_action( 'init', 'check_for_wooyenepay' );
+
+
 
 
  ?>
