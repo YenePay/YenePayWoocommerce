@@ -39,7 +39,7 @@ return array(
 		'title'       => __( 'Sandbox mode', 'woo_yenepay' ),
 		'type'        => 'checkbox',
 		'label'       => __( 'Use YenePay Sandbox', 'woo_yenepay' ),
-		'default'     => 'no',
+		'default'     => 'yes',
 		'description' => sprintf( __( 'YenePay sandbox can be used to test payments before going live. Start using our <a href="%s">sandbox application</a>.', 'woo_yenepay' ), 'https://sandbox.yenepay.com/' ),
 	),
 	'vat_registered' => array(
