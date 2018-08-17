@@ -287,7 +287,7 @@ class CheckoutItem
 		if(null != $this->getHandlingFee())
 			$dictionary["HandlingFee"] = $this->getHandlingFee();
 		if(null != $this->getDeliveryFee())
-			$dictionary["Shipping"] = $this->getDeliveryFee();
+			$dictionary["DeliveryFee"] = $this->getDeliveryFee();
 		if(null != $this->getTax1())
 			$dictionary["Tax1"] = $this->getTax1();
 		if(null != $this->getTax2())

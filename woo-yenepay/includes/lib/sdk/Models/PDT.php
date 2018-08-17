@@ -20,6 +20,7 @@ class PDT
 	private  $pdtToken;
 	private  $transactionId;
 	private  $useSandbox;
+	private  $merchantOrderId;
 		
 	function __construct()
 	{
@@ -35,6 +36,14 @@ class PDT
 		$this->requestType = $requestType;
 		$this->pdtToken = $pdtToken;
         $this->transactionId = $transactionId;
+	}
+	
+	function __construct4($requestType, $pdtToken, $transactionId, $merchantOrderId)
+	{
+		$this->requestType = $requestType;
+		$this->pdtToken = $pdtToken;
+        $this->transactionId = $transactionId;
+		$this->merchantOrderId = $merchantOrderId;
 	}
 		
 	/**
@@ -128,6 +137,29 @@ class PDT
     {
         return $this->useSandbox;
     }
+	
+	/**
+     * Set the merchant order id
+     *
+     * @param string $merchantOrderId
+     *
+     * @return $this
+     */
+    public function setMerchantOrderId($merchantOrderId)
+    {
+        $this->merchantOrderId = $merchantOrderId;
+        return $this;
+    }
+
+    /**
+     * Get the merchant order id
+     *
+     * @return string
+     */
+    public function getMerchantOrderId()
+    {
+        return $this->merchantOrderId;
+    }
 
 	public function getAsKeyValue()
 	{
@@ -138,6 +170,8 @@ class PDT
 			$dictionary["PdtToken"] = $this->getPDTToken();
 		if(null != $this->getTransactionId())
 			$dictionary["TransactionId"] = $this->getTransactionId();
+		if(null != $this->getMerchantOrderId())
+			$dictionary["MerchantOrderId"] = $this->getMerchantOrderId();
 
 		return $dictionary;
 	}

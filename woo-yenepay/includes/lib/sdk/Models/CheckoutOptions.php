@@ -11,7 +11,7 @@ class CheckoutOptions
 	private  $sellerCode;
 	private  $process;
 	private  $merchantOrderId;
-	private  $expiresInDays;
+	private  $expiresAfter;
 	private  $ipnUrl;
 	private  $successUrl;
 	private  $failureUrl;
@@ -45,13 +45,13 @@ class CheckoutOptions
         $this->process = CheckoutType::Express;
 	}
 	
-	function __construct9($sellerCode, $process, $merchantOrderId, $expiresInDays, $ipnUrl, $successUrl, $failureUrl, $cancelUrl, $useSandbox)
+	function __construct9($sellerCode, $process, $merchantOrderId, $expiresAfter, $ipnUrl, $successUrl, $failureUrl, $cancelUrl, $useSandbox)
 	{
 		$this->useSandbox = $useSandbox;
 		$this->sellerCode = $sellerCode;
         $this->process = $process;
 		$this->merchantOrderId = $merchantOrderId;
-		$this->expiresInDays = $expiresInDays;
+		$this->expiresAfter = $expiresAfter;
 		$this->ipnUrl = $ipnUrl;
 		$this->successUrl = $successUrl;
 		$this->failureUrl = $failureUrl;
@@ -59,7 +59,7 @@ class CheckoutOptions
 	}
 	
 	/**
-     * A 4-digit all numeral unique seller code used to uniquely identify a merchant on YenePay
+     * An all numeral unique seller code used to uniquely identify a merchant on YenePay
      *
      * @param string $sellerCode
      *
@@ -72,7 +72,7 @@ class CheckoutOptions
     }
 
     /**
-     * A 4-digit all numeral unique seller code used to uniquely identify a merchant on YenePay
+     * An all numeral unique seller code used to uniquely identify a merchant on YenePay
      *
      * @return string
      */
@@ -151,26 +151,26 @@ class CheckoutOptions
     }
 	
 	/**
-     * the number of days before an order expires
+     * The number of minutes before an order expires
      *
-     * @param string $expiresInDays
+     * @param string $expiresAfter
      *
      * @return $this
      */
-    public function setExpiresInDays($expiresInDays)
+    public function setExpiresAfter($expiresAfter)
     {
-        $this->expiresInDays = $expiresInDays;
+        $this->expiresAfter = $expiresAfter;
         return $this;
     }
 
     /**
-     * the number of days before an order expires
+     * The number of minutes before an order expires
      *
      * @return string
      */
-    public function getExpiresInDays()
+    public function getExpiresAfter()
     {
-        return $this->expiresInDays;
+        return $this->expiresAfter;
     }
 	
 	/**
@@ -380,7 +380,7 @@ class CheckoutOptions
         return $this->totalItemsDiscount;
     }
 	
-	function getAsKeyValue()
+	function getAsKeyValue($forCart)
 	{
 		$dictionary = array(
 			"Process" => $this->getProcess(),
@@ -389,15 +389,17 @@ class CheckoutOptions
 			"SuccessUrl" => $this->getSuccessUrl(),
 			"CancelUrl" => $this->getCancelUrl(),
 			"IPNUrl" => $this->getIPNUrl(),
-			"FailureUrl" => $this->getFailureUrl(),
-			"TotalItemsTax1" => $this->getTotalItemsTax1(),
-			"TotalItemsTax2" => $this->getTotalItemsTax2(),
-			"TotalItemsHandlingFee" => $this->getTotalItemsHandlingFee(),
-			"TotalItemsDeliveryFee" => $this->getTotalItemsDeliveryFee(),
-			"TotalItemsDiscount" => $this->getTotalItemsDiscount()
+			"FailureUrl" => $this->getFailureUrl()
 		);
-		if(null != $this->getExpiresInDays())
-			$dictionary["ExpiresInDays"] = $this->getExpiresInDays();
+		if(null != $this->getExpiresAfter())
+			$dictionary["ExpiresAfter"] = $this->getExpiresAfter();
+		if($forCart){
+			$dictionary["TotalItemsTax1"] = $this->getTotalItemsTax1();
+			$dictionary["TotalItemsTax2"] = $this->getTotalItemsTax2();
+			$dictionary["TotalItemsHandlingFee"] = $this->getTotalItemsHandlingFee();
+			$dictionary["TotalItemsDeliveryFee"] = $this->getTotalItemsDeliveryFee();
+			$dictionary["TotalItemsDiscount"] = $this->getTotalItemsDiscount();
+		}
 		return $dictionary;
 	}
 
