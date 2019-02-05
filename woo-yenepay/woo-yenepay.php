@@ -174,6 +174,7 @@ function woo_payment_gateway() {
 			$checkoutHelper = new CheckoutHelper();
 			try{
 				$redirectUrl = $checkoutHelper->getCartCheckoutUrl($options, $all_items);
+				self::log("checkout Url: ".$redirectUrl);							 
 				return array(
 					'result' => 'success',
 					'redirect' => $redirectUrl
