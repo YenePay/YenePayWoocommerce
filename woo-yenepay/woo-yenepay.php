@@ -275,26 +275,22 @@ function woo_payment_gateway() {
 			$yenepay_order_id = $_POST['TransactionId'];
 			$merchant_yenepay_id = $_POST['MerchantId'];
 			$customer_yenepay_id = $_POST['BuyerId'];
-			$customer_yenepay_name = $_POST['BuyerName'];
-			$yenepay_transaction_fee = $_POST['TransactionFee'];
 			$merchant_yenepay_code = $_POST['MerchantCode'];
 			$yenepay_order_status = $_POST['Status'];
-			$yenepay_order_description = $_POST['StatusDescription'];
+			$yenepay_order_code = $_POST['TransactionCode'];
 			$transaction_currency = $_POST['Currency'];
 			$useSandbox = $this->get_option('testmode');
 			
 			$ipnModel = new IPN();
 			$ipnModel -> setTotalAmount($total_amount);
 			$ipnModel -> setBuyerId($customer_yenepay_id);
-			$ipnModel -> setBuyerName($customer_yenepay_id);
-			$ipnModel -> setTransactionFee($yenepay_transaction_fee);
 			$ipnModel -> setMerchantOrderId($wc_order_id);
 			$ipnModel -> setMerchantId($merchant_yenepay_id);
 			$ipnModel -> setMerchantCode($merchant_yenepay_code);
 			$ipnModel -> setTransactionId($yenepay_order_id);
 			$ipnModel -> setStatus($yenepay_order_status);
-			$ipnModel -> setStatusDescription($yenepay_order_description);
 			$ipnModel -> setCurrency($transaction_currency);
+			$ipnModel -> setTransactionCode($yenepay_order_code);
 			$ipnModel -> setUseSandbox($useSandbox);
 			$ipnModel -> setSignature($ipn_signature);
 			
