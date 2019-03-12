@@ -26,12 +26,12 @@ return array(
 		'type'        => 'text',
 		'desc_tip'    => true,
 		'description' => __( 'This controls the description which the user sees during checkout.', 'woo_yenepay' ),
-		'default'     => __( "Pay with YenePay; you can pay directly from your bank account during checkout.", 'woo_yenepay' ),
+		'default'     => __( "Pay with YenePay; you can use your YenePay account during checkout.", 'woo_yenepay' ),
 	),
 	'merchantcode' => array(
 		'title'       => __( 'YenePay Merchant Code', 'woo_yenepay' ),
 		'type'        => 'text',
-		'description' => sprintf(__( 'Please enter your YenePay Merchant Code; this is required and can be found by logging into your <a href="%s">YenePay Account Manager</a>.', 'woo_yenepay' ),'https://account.yenepay.com/'),
+		'description' => sprintf(__( 'Please enter your YenePay Merchant Code; this is required and can be found by logging into your <a href="%s">YenePay Account Manager</a>.', 'woo_yenepay' ),'https://www.yenepay.com/account/'),
 		'desc_tip'    => true,
 		'placeholder' => 'Your YenePay Merchant Code',
 	),
@@ -54,7 +54,7 @@ return array(
 		'type'        => 'checkbox',
 		'label'       => __( 'Enable logging', 'woo_yenepay' ),
 		'default'     => 'no',
-		'description' => sprintf( __( 'Log YenePay events, such as IPN requests, inside %s', 'woo_yenepay' ), '<code>' . WC_Log_Handler_File::get_log_file_path( 'paypal' ) . '</code>' ),
+		'description' => sprintf( __( 'Log YenePay events, such as IPN requests, inside %s', 'woo_yenepay' ), '<code>' . WC_Log_Handler_File::get_log_file_path( 'yenepay' ) . '</code>' ),
 	),
 	'advanced' => array(
 		'title'       => __( 'Advanced options', 'woo_yenepay' ),
@@ -64,7 +64,7 @@ return array(
 	'pdt_token' => array(
 		'title'       => __( 'YenePay PDT token', 'woo_yenepay' ),
 		'type'        => 'text',
-		'description' => __( 'Get your "Payment Data Transfer" key (Settings > Notification Settings) on https://account.yenepay.com and then copy your pdt token here.', 'woo_yenepay' ),
+		'description' => __( 'Get your "Payment Data Transfer" key (Settings > Notification Settings) on https://www.yenepay.com/account and then copy your pdt token here.', 'woo_yenepay' ),
 		'default'     => '',
 		'desc_tip'    => true,
 		'placeholder' => '',

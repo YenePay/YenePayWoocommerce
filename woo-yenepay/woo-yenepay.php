@@ -203,6 +203,8 @@ function woo_payment_gateway() {
 				if( $order->has_status('completed') || $order->has_status('processing') || $order->has_status('paid') || $order->has_status('delivered')) {
 					return;
 				}
+				
+				//success return url hit
 				if( $wooyenepay == 'true' ) {
 					$result = null;
 					try {
@@ -226,7 +228,7 @@ function woo_payment_gateway() {
 
 								}
 								else{
-									//echo "<script> alert('failed PDT request. PDT result is: '".var_dump($result)."'); </script>";
+									self::log("failed PDT request. PDT result is: ".var_dump($result));
 								}
 							}
 						}
@@ -241,6 +243,7 @@ function woo_payment_gateway() {
 						  wc_add_notice(  $ex->getMessage(), 'error' );
 					
 						  //$order->update_status('failed', sprintf( __( '%s payment failed! Transaction ID: %d', 'woocommerce' ), $this->title, $paymentId ) . ' ' . $ex->getMessage() );
+						  self::log("Exception on PDT request. Exception is: ".$ex->getMessage());
 						  return;
 					}
 								  
@@ -248,9 +251,13 @@ function woo_payment_gateway() {
 					$woocommerce->cart->empty_cart();
 		  
 				}
+				
+				//cacel return url hit
 				if( $wooyenepay == 'cancel' ) { 
-					$order = new WC_Order( $order_id );
-					//$order->update_status('cancelled', sprintf( __( '%s payment cancelled! Transaction ID: %d', 'woocommerce' ), $this->title, $paymentId ) );
+					if(isset($_GET["TransactionId"])){
+						$transactionId = $_GET["TransactionId"];
+						$order->update_status('cancelled', sprintf( __( '%s payment cancelled! Transaction ID: %d', 'woocommerce' ), $this->title, $transactionId ) );
+					}
 				}
 			}
 			return;
