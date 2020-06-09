@@ -36,7 +36,7 @@ function woo_payment_gateway() {
 		 * @return void
 		 */
 		public function __construct() {
-			$this -> plugin_url = WP_PLUGIN_URL . DIRECTORY_SEPARATOR . 'woo-yenepay';
+			$this -> plugin_url = WP_PLUGIN_URL . DIRECTORY_SEPARATOR . 'YenePayWoocommerce';
 			
 			$this->id                 	= 'woo_yenepay'; 
 			$this->order_button_text  = __( 'Pay with YenePay', 'woo_yenepay' );
