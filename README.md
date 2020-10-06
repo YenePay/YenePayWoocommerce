@@ -1,4 +1,4 @@
-# Woocommerce payment method plugin for YenePay
+# YenePay checkout payment method plugin
 
 This plugin allows you to quickly and easily add YenePay as a payment method to your Wordpress/Woocommerce site.
 
