@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ae3a5fea09d6f522cc25069892e5556b",
+    "content-hash": "a84b20852859230543f8106da0c476e1",
     "packages": [
         {
             "name": "rmccue/requests",
@@ -54,14 +54,62 @@
                 "sockets"
             ],
             "time": "2016-10-13T00:11:37+00:00"
+        },
+        {
+            "name": "yenepay/php-sdk",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/YenePay/yenepay.sdk.php.git",
+                "reference": "7e84a0bcb8b52db0bf3eb51453ed9cfc9ec7d703"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/YenePay/yenepay.sdk.php/zipball/7e84a0bcb8b52db0bf3eb51453ed9cfc9ec7d703",
+                "reference": "7e84a0bcb8b52db0bf3eb51453ed9cfc9ec7d703",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0",
+                "rmccue/requests": ">=1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "YenePay\\": "./src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Natan Tadesse",
+                    "email": "natan.tadesse@yenepay.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "YenePay SDK for PHP",
+            "homepage": "https://github.com/YenePay/yenepay.sdk.php",
+            "keywords": [
+                "payment",
+                "php",
+                "sdk",
+                "yenepay"
+            ],
+            "time": "2020-06-05T18:44:23+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "yenepay/php-sdk": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
 }

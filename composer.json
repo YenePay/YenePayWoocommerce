@@ -1,0 +1,5 @@
+{
+    "require": {
+    	"yenepay/php-sdk": "dev-master"
+    }
+}
