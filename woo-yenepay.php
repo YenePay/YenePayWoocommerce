@@ -230,11 +230,15 @@ function yenepay_init_payment_gateway_class() {
 								//cURL used here to call yenepay's payment gateway API
 								$result = $checkoutHelper->RequestPDT($pdtModel);
 								if($result['result'] == 'SUCCESS' && ($result['Status'] == 'Paid' || $result['Status'] == 'Delivered' || $result['Status'] == 'Completed')){
-									// Payment complete
-									$order->payment_complete();
-									// Add order note
-									$order->add_order_note( sprintf( __( 'YenePay payment approved! Transaction ID: %s ', 'woocommerce' ), $transactionId ) );
-
+									if(floatval($result['TotalAmount']) == $order->get_total()){
+										// Payment complete
+										$order->payment_complete();
+										// Add order note
+										$order->add_order_note( sprintf( __( 'YenePay payment approved! Transaction ID: %s ', 'woocommerce' ), $transactionId ) );
+									}
+									else{
+										self::log("Total amount mismatch on PDT request for order: ".$order_id);
+									}
 								}
 								else{
 									self::log("failed PDT request. PDT result is: ".var_dump($result));
@@ -310,7 +314,7 @@ function yenepay_init_payment_gateway_class() {
 			$helper = new CheckoutHelper();
 
 			//check if the order total here and the total amount sent via ipn match
-			if(floatval($_POST['TotalAmount']) == $wc_order->get_order_total){
+			if(floatval($_POST['TotalAmount']) == $wc_order->get_total()){
 				//Call yenepay's payment gateway API and check the IPN validity
 				//cURL used here to call yenepay's payment gateway API
 				if($helper->isIPNAuthentic($ipnModel))
