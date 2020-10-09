@@ -279,8 +279,8 @@ function yenepay_init_payment_gateway_class() {
 			$wc_order = wc_get_order( absint( $wc_order_id ) );
 			
 			
-			if( $order->has_status('completed') || $order->has_status('processing') || $order->has_status('paid') || $order->has_status('delivered')) {
-				wp_safe_redirect( $returnUrl.'order_id='.$order_id );
+			if( $wc_order->has_status('completed') || $wc_order->has_status('processing') || $wc_order->has_status('paid') || $wc_order->has_status('delivered')) {
+				wp_safe_redirect( $returnUrl.'order_id='.$wc_order_id );
 			}
 			
 			$total_amount = number_format(floatval($_POST['TotalAmount']), 2, ".", "");
@@ -309,23 +309,27 @@ function yenepay_init_payment_gateway_class() {
 			
 			$helper = new CheckoutHelper();
 
-			//Call yenepay's payment gateway API and check the IPN validity
-			//cURL used here to call yenepay's payment gateway API
-			if($helper->isIPNAuthentic($ipnModel))
-			{	
-				//This means the payment is completed
-				//You can now mark the order as "Paid" or "Completed" here and start the delivery process
-				//todo: check total amount here
-				
-				
-				// Mark order complete
-				$wc_order->add_order_note( __( 'IPN completed by YenePay', 'woocommerce' ) );
-				$wc_order->payment_complete();
-				
-				// Empty cart and clear session
-				$woocommerce->cart->empty_cart();
-				//wp_redirect( $this->get_return_url( $wc_order ) );
-				//exit;
+			//check if the order total here and the total amount sent via ipn match
+			if(floatval($_POST['TotalAmount']) == $wc_order->get_order_total){
+				//Call yenepay's payment gateway API and check the IPN validity
+				//cURL used here to call yenepay's payment gateway API
+				if($helper->isIPNAuthentic($ipnModel))
+				{	
+					//This means the payment is completed
+					//You can now mark the order as "Paid" or "Completed" here and start the delivery process
+					
+					// Mark order complete
+					$wc_order->add_order_note( __( 'IPN completed by YenePay', 'woocommerce' ) );
+					$wc_order->payment_complete();
+					
+					// Empty cart and clear session
+					$woocommerce->cart->empty_cart();
+					//wp_redirect( $this->get_return_url( $wc_order ) );
+					//exit;
+				}
+			}
+			else{
+				self::log("ipn verification for order id".$wc_order_id."failed with total amount mismatch.");
 			}
 		}
 		
