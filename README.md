@@ -23,10 +23,10 @@ You will need these values when setting up this plugin.
 ## Installation
 
 You can add the payment plugin in two ways:
-A. Install from wordpress.org plugins directory (recommended)
+1. Install from wordpress.org plugins directory (recommended)
     1. Go to the \'Plugins\' menu in your WordPress admin and search for 'YenePay'
     2. Install and activate the plugin \'YenePay Checkout Payment Gateway\'
-B. Build from source
+2. Build from source
     1. Clone the repo or download the latest stable release version of the repo
     2. Using command line, restore the dependency packages by running \'composer install --no-dev\' from within the clone directory
     3. Once the above finishes installing, zip the clone directory and upload the file via the WordPress Plugin installer wizard.
