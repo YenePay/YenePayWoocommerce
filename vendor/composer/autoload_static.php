@@ -6,10 +6,18 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit924bdfbab23733701bc75360ea6c4a35
 {
+    public static $files = array (
+        '941748b3c8cae4466c827dfb5ca9602a' => __DIR__ . '/..' . '/rmccue/requests/library/Deprecated.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
         'Y' => 
         array (
             'YenePay\\' => 8,
+        ),
+        'W' => 
+        array (
+            'WpOrg\\Requests\\' => 15,
         ),
     );
 
@@ -18,16 +26,15 @@ class ComposerStaticInit924bdfbab23733701bc75360ea6c4a35
         array (
             0 => __DIR__ . '/..' . '/yenepay/php-sdk/src',
         ),
+        'WpOrg\\Requests\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/rmccue/requests/src',
+        ),
     );
 
-    public static $prefixesPsr0 = array (
-        'R' => 
-        array (
-            'Requests' => 
-            array (
-                0 => __DIR__ . '/..' . '/rmccue/requests/library',
-            ),
-        ),
+    public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Requests' => __DIR__ . '/..' . '/rmccue/requests/library/Requests.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -35,7 +42,7 @@ class ComposerStaticInit924bdfbab23733701bc75360ea6c4a35
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit924bdfbab23733701bc75360ea6c4a35::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit924bdfbab23733701bc75360ea6c4a35::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit924bdfbab23733701bc75360ea6c4a35::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit924bdfbab23733701bc75360ea6c4a35::$classMap;
 
         }, null, ClassLoader::class);
     }
