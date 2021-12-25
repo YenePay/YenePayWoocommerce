@@ -22,25 +22,14 @@ You will need these values when setting up this plugin.
 
 ## Installation
 
-You can add the payment plugin in two ways:
-1. Install from wordpress.org plugins directory (recommended)
-    1. Go to the \'Plugins\' menu in your WordPress admin and search for 'YenePay'
-    2. Install and activate the plugin \'YenePay Checkout Payment Gateway\'
-2. Build from source
-    1. Clone the repo or download the latest stable release version of the repo
-    2. Using command line, restore the dependency packages by running \'composer install --no-dev\' from within the clone directory
-    3. Once the above finishes installing, zip the clone directory and upload the file via the WordPress Plugin installer wizard.
-    4. Activate the new plugin.
+Step 1: Download the contents of this repository. 
 
-## Setup
+Step 2: Copy the folder "woo-yenepay", then go to your wordpress site root folder and paste it in the "plugins" folder. This is typically located in {your-wordpress-site-folder}\wp-content\plugins. 
 
-1. Install and Activate the plugin using the steps above
-2. From the admin site, go to Woocommerce > Settings and select the Checkout tab or Payments tab depending on your WordPress version. 
-3. Then click on YenePay from the list of available payment methods. If you don't see it here, make sure you have activated the YenePay payment plugin.
-4. Once on the YenePay Payment Gateway settings page, fill in the YenePay Merchant Code with the value of your User Code and YenePay PDT token with your PDT Key. These values can be obtained from your Account Manager page as indicated in the pre-requisite section above.
+Step 3: Open your wordpress site's admin page and navigate to Plugins > Installed Plugins. Then find WooCommerce YenePay Payment Gateway and click on Activate
 
-You also have an option to use our Sandbox application to test out your integration before going live. We highly recommend using this feature when testing the integration. 
+Step 4: From the admin site, go to Woocommerce > Settings and select the Checkout tab. Then click on YenePay from the list of available payment methods at the top of the page. If you don't see it here, make sure you have activated the YenePay payment plugin as mentioned in Step 3 above.
 
-When doing Sandbox testing, make sure the values you use for the Merchant Code and PDT Token are from the generated sandbox merchant user. Details on how to generate sandbox users can be found here: https://community.yenepay.com/docs/yenepay-sandbox/how-to-create-sandbox-users/
+Step 5: Once on the YenePay Payment Gateway settings page, fill in the YenePay Merchant Code with the value of your User Code and YenePay PDT token with your PDT Key. These values can be obtained from your Account Manager page as indicated in the pre-requisite section above.
 
 You also have an option to use our Sandbox application to test out your integration before going live. We highly recommend using this feature when testing the integration.

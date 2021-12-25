@@ -7,5 +7,4 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'YenePay\\' => array($vendorDir . '/yenepay/php-sdk/src'),
-    'WpOrg\\Requests\\' => array($vendorDir . '/rmccue/requests/src'),
 );

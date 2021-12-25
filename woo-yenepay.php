@@ -3,7 +3,7 @@
  * Plugin Name: YenePay Checkout Payment Gateway
  * Plugin URI: https://github.com/YenePay/YenePayWoocommerce
  * Description: YenePay checkout payment gateway plugin for WooCommerce; start accepting Ethiopian mobile wallet payments on your store. 
- * Version: 1.2.0
+ * Version: 1.2.4
  * Requires at least: 4.9
  * Requires PHP: 5.6.20
  * Author: YenePay Financial Technologies
