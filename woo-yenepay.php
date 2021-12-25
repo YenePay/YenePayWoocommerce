@@ -158,6 +158,8 @@ function yenepay_init_payment_gateway_class() {
 			$options->setTotalItemsDeliveryFee($order->get_total_shipping())
 					->setMerchantOrderId($order_id)
 					->setProcess(CheckoutType::Cart);
+			if($this->is_valid_for_use())
+					$options->setCurrency(get_woocommerce_currency());
 			
 			//todo: set handling and discounts here (if available)			
 			$baseUrl = $this->get_return_url( $order );
@@ -343,8 +345,8 @@ function yenepay_init_payment_gateway_class() {
          * @access public
          * @return bool
          */
-        function is_valid_for_use() {
-          $supported_currencies = array('ETB');
+        public function is_valid_for_use() {
+          $supported_currencies = array('ETB', 'USD', 'EUR', 'GBP');
 
             if ( ! in_array( get_woocommerce_currency(), apply_filters( 'woocommerce_yenepay_supported_currencies', $supported_currencies ) ) ) return false;
 
