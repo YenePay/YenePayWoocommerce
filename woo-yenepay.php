@@ -126,19 +126,36 @@ function yenepay_init_payment_gateway_class() {
 		public function process_payment( $order_id ) {
 			global $woocommerce;
 			$order = wc_get_order( $order_id );
-			
+			$orderitems = $order->get_items(array( 'line_item', 'fee' ));
+			$orderfees = $order->get_fees();
 			$all_items = array();
-			$subtotal = 0;
 			
 			// Products
-			foreach ( $order->get_items( array( 'line_item', 'fee' ) ) as $item ) {
+			foreach ( $order->get_items( 'line_item' )  as $item ) {
 				$itemObject = new CheckoutItem();
 				$product = $order->get_product_from_item( $item );
 				$id = $product ? $product->get_sku() : '';
-				$itemObject->setName( $item['name'] );
-				$itemObject->setQuantity( $item['qty'] );
+				$itemObject->setName( $item->get_name() );
+				$itemObject->setQuantity( $item->get_quantity() );
+				$subtotal = $item->get_subtotal();
+				$total = $item->get_total();
 				$itemObject->setPrice( $order->get_item_subtotal( $item, false ) );
-				$subtotal += $order->get_item_subtotal( $item, false ) * $item['qty'];
+
+				if( $id ) {
+					$itemObject->setId( $id );
+				}  
+			
+				$all_items[] = $itemObject;
+			}
+
+			//extra fee items
+			foreach ( $order->get_items( 'fee' )  as $item ) {
+				$itemObject = new CheckoutItem();
+				$itemObject->setName( $item->get_name() );
+				$itemObject->setQuantity( $item->get_quantity() );
+				$itemsubtotal = $item->get_amount();
+				$itemObject->setPrice( $itemsubtotal );
+
 				if( $id ) {
 					$itemObject->setId( $id );
 				}  

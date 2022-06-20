@@ -2,7 +2,7 @@
 Contributors: airmax7
 Tags: YenePay, YenePay checkout, online payment, woocommerce payment
 Requires at least: 4.9
-Tested up to: 5.5.1
+Tested up to: 6.0
 Requires PHP: 5.6.20
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
